@@ -1,0 +1,202 @@
+/** Solve the n - queens problem */
+public class Queens {
+  
+  // used to indicate an empty square or a square containing a queen
+  private enum Square {EMPTY, QUEEN};
+  
+  private static int BOARD_SIZE = 2;   
+  private Square board[][]; // chess board
+  
+  /**
+   * Constructor: Creates an empty 8x8 square board.
+   */
+  public Queens() {
+    board = new Square[BOARD_SIZE][BOARD_SIZE];
+  }  // end constructor         
+  
+  /**
+   * Constructor: Creates an empty nxn square board.
+   */
+  public Queens(int n) {
+    BOARD_SIZE = n;
+    board = new Square[BOARD_SIZE][BOARD_SIZE];
+  }  // end constructor         
+  
+  /** 
+   * Clears the board.
+   * Precondition: None.
+   * Postcondition: Sets all squares to EMPTY.
+   */
+  public void clearBoard() {
+    for (int i = 0; i < BOARD_SIZE; i ++)
+    {
+      for (int j = 0; j < BOARD_SIZE; j ++)
+      {
+        board[i][j] = Square.EMPTY; 
+      }
+        
+    }
+  }  // end clearBoard
+  
+  /**
+   * Displays the board.
+   * Precondition: None.
+   * Postcondition: Board is written to standard 
+   * output; zero is an EMPTY square, one is a square 
+   * containing a queen (QUEEN).
+   */
+  public void displayBoard() {
+     for (int i = 0; i < BOARD_SIZE; i ++)
+    {
+     
+      for (int j = 0; j < BOARD_SIZE; j ++)
+      {
+        if(board[i][j] == Square.QUEEN)
+        {
+          System.out.print("Q");
+        }
+        else
+        {
+          System.out.print("*");
+        }
+      }
+         System.out.println();
+    }
+  } // end displayBoard
+  
+  /** Solves Eight Queens problem.  
+    * Postcondition: If a solution is found, each 
+    * row of the board contains one queen and method 
+    * returns true; otherwise, returns false (no 
+    * solution exists for a queen anywhere in row 
+    * specified) and the entire board should be empty. 
+    */
+  public boolean solveQueensProblem() {
+    clearBoard();
+    if (placeQueens(0) == true) 
+      return true;
+    
+    // no solution found, so clear board
+    System.out.println("No solution was found.");
+    clearBoard(); 
+    return false;
+  }      
+  
+  // -------------------------------------------------
+  // Places queens in row of the board beginning 
+  // at the row specified.
+  // Precondition: Queens are placed correctly in 
+  // row 0 through row-1.
+  // Postcondition: If a solution is found, each 
+  // row of the board contains one queen and method 
+  // returns true; otherwise, returns false (no 
+  // solution exists for a queen anywhere in row 
+  // specified).
+  // -------------------------------------------------
+  private boolean placeQueens(int row) {
+    if (row >= BOARD_SIZE) {
+      return true;  // Sountion found: entire board has been filled!
+    } 
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+      if (!isUnderAttack(row, i))
+      {
+        setQueen(row, i);
+        boolean place = placeQueens(row + 1);
+        if(place == false)
+        {
+          removeQueen(row, i);
+        }
+        else
+          return true;
+      }
+    }
+    /* complete this code */
+    return false;
+  } // end placeQueens
+  
+  // --------------------------------------------------
+  // Sets a queen at square indicated by row and 
+  // column.
+  // Precondition: None.
+  // Postcondition: Sets the square on the board in a 
+  // given row and column to QUEEN.
+  // --------------------------------------------------
+  private void setQueen(int row, int column) {
+    board[row][column] = Square.QUEEN;
+   // System.out.println("Placing a queen at row " + " " + row + " At column" + " " + column + ".");
+  }  // end setQueen
+  
+  // --------------------------------------------------
+  // Removes a queen at square indicated by row and
+  // column.
+  // Precondition: None.
+  // Postcondition: Sets the square on the board in a 
+  // given row and column to EMPTY.
+  // --------------------------------------------------
+  private void removeQueen(int row, int column) {
+    board[row][column] = Square.EMPTY;
+   // System.out.println("Removing a queen at row " + " " + row + " At column" + " " + column + ".");
+  }  // end removeQueen
+  
+  // --------------------------------------------------
+  // Determines whether the square on the board at a 
+  // given row and column is under attack by any queens 
+  // in the row 0 through row-1.
+  // Precondition: Each row between 0 and row-1 
+  // has a queen placed in a square at a specific column. 
+  // None of these queens can be attacked by any other
+  // queen.
+  // Postcondition: If the designated square is under 
+  // attack, returns true; otherwise, returns false.
+  // --------------------------------------------------
+  private boolean isUnderAttack(int row, int column) { 
+   // System.out.println("row is " + row + " col is " + column);
+    // check every row about this row for:
+   
+    for (int j = row -1; j >= 0; j--) // Checking a column
+    {
+      if (board[j][column] == Square.QUEEN)
+      {
+        return true;
+      }
+    }
+    
+    for (int i = row,  j = column; i >= 0 && j >= 0; i--, j--) // a queen to left-diagonal
+    {
+      if (board[i][j] == Square.QUEEN)
+      {
+        return true;
+      }
+    }
+    
+    for (int i = row, j = column; i < BOARD_SIZE && j < BOARD_SIZE && i >= 0 && j >= 0; i--, j++) // a queen to right-diagonal
+    {
+     // System.out.println("here");
+      if(board[i][j] == Square.QUEEN)
+      {
+        return true;
+      }
+    }
+    
+     return false;
+    
+  }  // end isUnderAttack
+  
+  
+  /** Main method, uses solveForAllBoards to solve for all solutions. */
+    public static void main(String[] args) {
+//    for (int n=3; n<9; n++) {
+//      Queens q = new Queens(n);
+//      q.clearBoard();
+//      if (q.solveQueensProblem())
+//        q.displayBoard();
+//      else
+//        System.out.println("no solution for board size " + n);
+//      System.out.println();
+//    }
+    Queens queen =  new Queens(BOARD_SIZE);
+    queen.solveQueensProblem();
+    queen.displayBoard(); 
+    }
+} // end Queens
